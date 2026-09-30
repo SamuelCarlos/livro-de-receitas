@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Livro de Receitas · Samuel</title>
+<style>
+:root{
+  --paper:#f6f1e7; --page:#fffdf8; --ink:#2a2420; --muted:#7a6f64; --line:#e4dccd;
+  --accent:#b4472a; --accent-soft:#f3e2d9; --green:#4d6b3c;
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
+  --sans:"Avenir Next","Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;cursor:pointer}
+.wrap{max-width:1080px;margin:0 auto;padding:28px 20px 80px}
+header.mast{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;border-bottom:2px solid var(--ink);padding-bottom:14px}
+.mast h1{font-family:var(--serif);font-weight:600;font-size:clamp(30px,5vw,46px);line-height:1;margin:0;letter-spacing:-.01em}
+.mast h1 em{font-style:italic;color:var(--accent)}
+.mast .meta{font-size:13px;color:var(--muted);text-align:right;line-height:1.5}
+.filters{display:grid;gap:10px;margin:22px 0 8px}
+.frow{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.frow .lbl{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);width:88px;flex:none}
+.chip{border:1px solid var(--line);background:var(--page);border-radius:999px;padding:9px 14px;font-size:14px;min-height:40px;transition:background .15s,border-color .15s}
+.chip:hover{border-color:var(--ink)}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--page);border-color:var(--ink)}
+.chip .n{opacity:.55;margin-left:6px;font-size:12px}
+.chip:disabled{opacity:.35;cursor:default}
+.chip:focus-visible,.row:focus-visible,.nav button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.count{font-size:13px;color:var(--muted);margin:14px 0 6px}
+/* Sumário */
+.toc{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+.row{display:grid;grid-template-columns:44px 1fr auto;gap:14px;align-items:baseline;padding:16px 4px;border-bottom:1px solid var(--line);text-decoration:none;color:inherit;cursor:pointer;background:none;border-left:0;border-right:0;border-top:0;width:100%;text-align:left}
+.row:hover{background:var(--page)}
+.row .pg{font-family:var(--serif);font-size:15px;color:var(--muted);font-variant-numeric:tabular-nums}
+.row .t{font-family:var(--serif);font-size:21px;line-height:1.25}
+.row .sub{display:block;font-family:var(--sans);font-size:13px;color:var(--muted);margin-top:4px}
+.row .mac{font-size:13px;color:var(--muted);text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.row .mac b{color:var(--ink);font-weight:600}
+.empty{padding:40px 0;color:var(--muted);font-family:var(--serif);font-size:18px}
+/* Página */
+.book{display:none}
+body.reading .index{display:none}
+body.reading .book{display:block}
+.nav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:18px 0}
+.nav button{border:1px solid var(--line);background:var(--page);border-radius:8px;padding:10px 14px;min-height:44px;font-size:14px}
+.nav button:disabled{opacity:.35;cursor:default}
+.nav .pos{font-size:13px;color:var(--muted)}
+.page{background:var(--page);border:1px solid var(--line);border-radius:4px;box-shadow:0 1px 0 var(--line),0 18px 40px -28px rgba(60,40,20,.35);padding:clamp(22px,5vw,56px);animation:turn .25s ease-out}
+@keyframes turn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.page{animation:none}}
+.kicker{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:600}
+.page h2{font-family:var(--serif);font-weight:600;font-size:clamp(28px,4.4vw,42px);line-height:1.08;margin:10px 0 12px;letter-spacing:-.01em;text-wrap:balance}
+.lede{font-family:var(--serif);font-size:18px;line-height:1.5;color:#4a4038;max-width:62ch;margin:0}
+.facts{display:flex;flex-wrap:wrap;gap:0;margin:24px 0 30px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.fact{padding:12px 22px 12px 0;margin-right:22px;border-right:1px solid var(--line)}
+.fact:last-child{border-right:0}
+.fact .k{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.fact .v{font-family:var(--serif);font-size:22px;margin-top:2px;font-variant-numeric:tabular-nums}
+.fact .v small{font-size:13px;color:var(--muted);font-family:var(--sans)}
+.cols{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(22px,4vw,48px)}
+@media (max-width:760px){.cols{grid-template-columns:1fr}.row{grid-template-columns:32px 1fr}.row .mac{grid-column:2;text-align:left}.frow .lbl{width:100%}}
+h3{font-family:var(--serif);font-weight:600;font-size:19px;margin:0 0 10px;padding-bottom:6px;border-bottom:1px solid var(--ink)}
+.ing{list-style:none;margin:0;padding:0}
+.ing li{padding:8px 0;border-bottom:1px dotted var(--line);font-size:15px;line-height:1.45}
+.steps{margin:0;padding:0;list-style:none;counter-reset:s}
+.steps li{counter-increment:s;display:grid;grid-template-columns:30px 1fr;gap:8px;padding:6px 0 12px;font-size:15.5px;line-height:1.55}
+.steps li::before{content:counter(s);font-family:var(--serif);font-size:20px;color:var(--accent);line-height:1.2}
+.block{margin-top:28px}
+.freeze{background:var(--accent-soft);border-radius:6px;padding:18px 20px;margin-top:28px}
+.freeze h3{border-color:var(--accent)}
+.freeze p,.freeze li{font-size:15px;line-height:1.55;margin:6px 0}
+.freeze ul{padding-left:18px;margin:6px 0}
+.note{font-size:15px;line-height:1.55;margin:0}
+.tip{margin-top:28px;font-family:var(--serif);font-style:italic;font-size:16px;color:#4a4038;border-top:1px solid var(--line);padding-top:16px}
+.tip b{font-style:normal;font-family:var(--sans);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--green);display:block;margin-bottom:4px}
+.folio{text-align:center;margin-top:30px;font-family:var(--serif);color:var(--muted);font-size:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="mast">
+    <h1>Livro de <em>Receitas</em></h1>
+    <div class="meta" id="meta"></div>
+  </header>
+
+  <section class="index">
+    <div class="filters">
+      <div class="frow" id="f-ref"><span class="lbl">Refeição</span></div>
+      <div class="frow" id="f-prot"><span class="lbl">Proteína</span></div>
+    </div>
+    <div class="count" id="count"></div>
+    <ol class="toc" id="toc"></ol>
+  </section>
+
+  <section class="book">
+    <div class="nav">
+      <button id="back">← Sumário</button>
+      <span class="pos" id="pos"></span>
+      <span>
+        <button id="prev" aria-label="Receita anterior">‹</button>
+        <button id="next" aria-label="Próxima receita">›</button>
+      </span>
+    </div>
+    <article class="page" id="page"></article>
+  </section>
+</div>
+
+<script id="data" type="application/json">[{"id": "almondegas-frango-aveia-espinafre", "data": "2026-09-30", "nome": "Almôndegas de frango com aveia e espinafre", "resumo": "Muita proteína, pouca gordura saturada. A aveia traz fibra solúvel, que ajuda a baixar o LDL.", "proteina": "frango", "categorias": ["almoco", "jantar"], "rendimento": "40 unidades (8 porções de 5)", "porcao": "5 almôndegas", "kcal": 240, "proteina_g": 33, "tempo_preparo_min": 35, "ingredientes": ["1 kg de peito de frango moído, sem pele", "100 g de aveia em flocos finos (≈10 colheres de sopa)", "2 ovos inteiros + 2 claras", "1 cebola média ralada (150 g)", "1 cenoura média ralada fino (120 g)", "2 xícaras de espinafre picado (60 g)", "3 dentes de alho amassados", "Sal, pimenta, páprica defumada, cheiro-verde e orégano a gosto", "1 colher (sopa) de azeite, só para pincelar"], "preparo": ["Misture tudo com as mãos e deixe descansar 10 min para a aveia hidratar.", "Faça bolinhas de ~35 g, do tamanho de uma bola de pingue-pongue.", "Pincele com azeite e asse na air fryer a 180 °C por 15 min, virando na metade. No forno: 200 °C por 20–25 min."], "congelar": ["Espere esfriar e espalhe numa assadeira sem encostar uma na outra; freezer por 2 h.", "Passe para saquinhos ou potes com 5 unidades cada."], "validade": "3 meses a −18 °C", "airfryer": "180 °C por 12–15 min direto do congelado, balançando o cesto na metade. Pronto quando o centro estiver bem quente, sem parte rosada.", "servir": "Com arroz e feijão, molho de tomate caseiro ou dentro de um wrap integral.", "dica": "Trocar o leite integral do shake por desnatado corta ~60 kcal e ~4 g de gordura saturada por dia."}]</script>
+<script>
+(function(){
+  const RECEITAS = JSON.parse(document.getElementById('data').textContent)
+    .sort((a,b)=> a.data.localeCompare(b.data) || a.nome.localeCompare(b.nome));
+  RECEITAS.forEach((r,i)=> r.pagina = i+1);
+
+  const REFEICOES = [["cafe_manha","Café da manhã"],["almoco","Almoço"],["cafe_tarde","Café da tarde"],["jantar","Jantar"]];
+  const PROTEINAS = [["frango","Frango"],["bovina","Carne bovina"],["suina","Carne suína"],["peixe","Peixe e frutos do mar"],["ovos","Ovos"],["laticinios","Laticínios e whey"],["vegetal","Vegetal"]];
+  const nomeRef = Object.fromEntries(REFEICOES), nomeProt = Object.fromEntries(PROTEINAS);
+
+  const store = { get(k){ try{return localStorage.getItem(k)}catch(e){return null} }, set(k,v){ try{localStorage.setItem(k,v)}catch(e){} } };
+  const state = {ref: store.get('lr_ref')||'todas', prot: store.get('lr_prot')||'todas'};
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const dataBR = d => d.split('-').reverse().join('/');
+
+  function filtradas(ref=state.ref, prot=state.prot){
+    return RECEITAS.filter(r => (ref==='todas' || (r.categorias||[]).includes(ref)) && (prot==='todas' || r.proteina===prot));
+  }
+
+  function chips(el, lista, key){
+    el.querySelectorAll('.chip').forEach(c=>c.remove());
+    [["todas","Todas"],...lista].forEach(([v,label])=>{
+      const n = key==='ref' ? filtradas(v, state.prot).length : filtradas(state.ref, v).length;
+      const b = document.createElement('button');
+      b.className='chip'; b.type='button';
+      b.setAttribute('aria-pressed', state[key]===v);
+      b.disabled = n===0 && state[key]!==v;
+      b.innerHTML = esc(label)+'<span class="n">'+n+'</span>';
+      b.onclick=()=>{ state[key]=v; store.set('lr_'+key,v); renderIndex(); };
+      el.appendChild(b);
+    });
+  }
+
+  function renderIndex(){
+    chips($('f-ref'), REFEICOES, 'ref');
+    chips($('f-prot'), PROTEINAS, 'prot');
+    const lista = filtradas();
+    $('count').textContent = lista.length===1 ? '1 receita' : lista.length+' receitas';
+    $('toc').innerHTML = lista.length ? lista.map(r=>`
+      <li><button class="row" data-id="${esc(r.id)}">
+        <span class="pg">${String(r.pagina).padStart(2,'0')}</span>
+        <span class="t">${esc(r.nome)}<span class="sub">${esc(nomeProt[r.proteina]||r.proteina)} · ${(r.categorias||[]).map(c=>nomeRef[c]||c).join(', ')} · ${dataBR(r.data)}</span></span>
+        <span class="mac"><b>${r.kcal}</b> kcal · <b>${r.proteina_g} g</b> prot.</span>
+      </button></li>`).join('')
+      : '<li class="empty">Nenhuma receita com esses filtros ainda.</li>';
+    $('toc').querySelectorAll('.row').forEach(b=> b.onclick=()=>{ go(b.dataset.id); });
+  }
+
+  function renderPage(id){
+    const lista = filtradas().some(r=>r.id===id) ? filtradas() : RECEITAS;
+    const i = lista.findIndex(r=>r.id===id);
+    if(i<0){ go(null); return; }
+    const r = lista[i];
+    document.body.classList.add('reading');
+    $('pos').textContent = `${i+1} de ${lista.length}`;
+    $('prev').disabled = i===0; $('next').disabled = i===lista.length-1;
+    $('prev').onclick=()=>{ go(lista[i-1].id); };
+    $('next').onclick=()=>{ go(lista[i+1].id); };
+    const li = a => (a||[]).map(x=>`<li>${esc(x)}</li>`).join('');
+    $('page').innerHTML = `
+      <div class="kicker">${esc(nomeProt[r.proteina]||r.proteina)} · ${(r.categorias||[]).map(c=>esc(nomeRef[c]||c)).join(' · ')}</div>
+      <h2>${esc(r.nome)}</h2>
+      ${r.resumo?`<p class="lede">${esc(r.resumo)}</p>`:''}
+      <div class="facts">
+        <div class="fact"><div class="k">Por porção</div><div class="v">${r.kcal} <small>kcal</small></div></div>
+        <div class="fact"><div class="k">Proteína</div><div class="v">${r.proteina_g} <small>g</small></div></div>
+        ${r.porcao?`<div class="fact"><div class="k">Porção</div><div class="v" style="font-size:17px">${esc(r.porcao)}</div></div>`:''}
+        ${r.rendimento?`<div class="fact"><div class="k">Rende</div><div class="v" style="font-size:17px">${esc(r.rendimento)}</div></div>`:''}
+      </div>
+      <div class="cols">
+        <div><h3>Ingredientes</h3><ul class="ing">${li(r.ingredientes)}</ul></div>
+        <div>
+          <h3>Preparo</h3><ol class="steps">${li(r.preparo)}</ol>
+          ${r.servir?`<div class="block"><h3>Como servir</h3><p class="note">${esc(r.servir)}</p></div>`:''}
+        </div>
+      </div>
+      <div class="freeze">
+        <h3>Freezer e air fryer</h3>
+        ${r.congelar?`<ul>${li(r.congelar)}</ul>`:''}
+        ${r.validade?`<p><b>Validade:</b> ${esc(r.validade)}</p>`:''}
+        ${r.airfryer?`<p><b>Do congelado:</b> ${esc(r.airfryer)}</p>`:''}
+      </div>
+      ${r.dica?`<p class="tip"><b>Dica da nutri</b>${esc(r.dica)}</p>`:''}
+      <div class="folio">— ${r.pagina} —</div>`;
+    window.scrollTo(0,0);
+  }
+
+  let atual = null;
+  function go(id){ atual = id; route(); }
+  function route(){
+    if(atual) renderPage(atual);
+    else { document.body.classList.remove('reading'); renderIndex(); }
+  }
+  $('back').onclick=()=>go(null);
+  document.addEventListener('keydown',e=>{
+    if(!document.body.classList.contains('reading')) return;
+    if(e.key==='ArrowLeft' && !$('prev').disabled) $('prev').click();
+    if(e.key==='ArrowRight' && !$('next').disabled) $('next').click();
+    if(e.key==='Escape') $('back').click();
+  });
+  const ult = RECEITAS[RECEITAS.length-1];
+  $('meta').innerHTML = `${RECEITAS.length} receita${RECEITAS.length===1?'':'s'} da Nutri<br>${ult?'atualizado em '+dataBR(ult.data):''}`;
+  route();
+})();
+</script>
+</body>
+</html>
